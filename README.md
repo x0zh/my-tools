@@ -34,7 +34,7 @@ chmod a+x my-tools.sh
 ### git
 
 | 命令名称           | 描述                                     |
-| :------           |:---                                     |
+| :------           | :---                                     |
 | git-new-branch    | 基于当前分支创建新分支，并与对应的远程分支绑定 ｜
 | git-commit-push   | 提交当前分支的变更，并推送到远程             ｜
 | git-delete-branch | 删除指定的本地分支和对应的远程分支            ｜
