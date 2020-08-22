@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v0.3.0
+#version: v3.2.3
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -20,7 +20,7 @@ fi
 SCRIPTPATH=$(cd $(dirname "$0"); pwd)
 
 # 根路径
-export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools/"
+export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 引入git通用模块
 . "${APP_HOME}/utils/git.sh"
 

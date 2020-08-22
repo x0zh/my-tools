@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v0.3.0
+#version: v3.2.3
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -18,22 +18,40 @@ function add_x {
     fi
 }
 
-# git tools
+# git tools ====================================================================
 
 echo "Git-Tools:"
 
-# branch-new-and-track.sh
+# git/branch-new-and-track.sh
 CURRENT_TOOL="${APP_HOME}/git/branch-new-and-track.sh"
 echo "    ${CURRENT_TOOL}"
 add_x "${CURRENT_TOOL}"
 
-# commit-push.sh
+# git/commit-push.sh
 CURRENT_TOOL="${APP_HOME}/git/commit-push.sh"
 echo "    ${CURRENT_TOOL}"
 add_x "${CURRENT_TOOL}"
 
-# branch-delete-local-remote.sh
+# git/branch-delete-local-remote.sh
 CURRENT_TOOL="${APP_HOME}/git/branch-delete-local-remote.sh"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# file tools ===================================================================
+
+echo "File-Tools:"
+
+# file/new-file-with-template.sh
+CURRENT_TOOL="${APP_HOME}/file/new-file-with-template.sh"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# maven tools ==================================================================
+
+echo "Maven-Tools:"
+
+# maven/mvn-skip-test-doc.sh
+CURRENT_TOOL="${APP_HOME}/maven/mvn-skip-test-doc.sh"
 echo "    ${CURRENT_TOOL}"
 add_x "${CURRENT_TOOL}"
 

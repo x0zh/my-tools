@@ -1,2 +1,4 @@
 tmp/
 dist/
+my-tools-data/
+.DS_store
