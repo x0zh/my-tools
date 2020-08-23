@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v3.2.3
+#version: v1.0.1
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
