@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.0.0
+#version: v1.1.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -25,8 +25,10 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 定义变量
 # 当前分支
 CURRENT_BRANCH=$(git_current_branch)
-# commit信息
+# 默认的commit信息
 COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
+# 交互式的标识，如果是true，则执行完git status命令后会提示是否继续
+INTERACTIVE_FLAG=false
 
 # 定义函数
 # 帮助函数
@@ -52,6 +54,9 @@ if [ "$1" = "--help" -o "$1" = "-H" ]; then
 elif [ "$1" = "-m" ]; then
     COMMIT_MSG="${2}"
     shift 2
+elif [ "$1" = "--interactive" -o "$1" = "-i" ]; then
+    INTERACTIVE_FLAG=true
+    shift 1
 else
     break
 fi
@@ -63,6 +68,17 @@ notice_msg "Current branch: ${CURRENT_BRANCH}"
 
 notice_msg "[1]Status:"
 git status
+
+if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+    while true; do
+        read -p "是否继续?(y/n)" yn
+        case ${yn} in
+            [Yy]* ) break;;
+            [Nn]* ) exit;;
+            * ) echo "请输入y/n";;
+        esac
+    done
+fi
 
 # Add changes to git
 notice_msg "[2]Add ..."
