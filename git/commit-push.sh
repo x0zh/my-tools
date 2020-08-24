@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.2.0
+#version: v1.2.1
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -27,6 +27,8 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 CURRENT_BRANCH=$(git_current_branch)
 # commit信息
 COMMIT_MSG=""
+# 默认的commit信息
+DEFAULT_COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
 # 交互式的标识，如果是true，则执行完git status命令后会提示是否继续
 INTERACTIVE_FLAG=false
 
@@ -37,11 +39,12 @@ cat << EOF
 
 usage: $0 <option>
 
-提交当前分支的变更，并推送到远程
+提交当前分支的变更，并推送到远程。
 
 OPTIONS:
-  [-m] commitMessage 指定提交信息
-  [--help | -H]      帮助
+  [--interactive | -i] 交互式执行
+  [-m] commitMessage   指定提交信息
+  [--help | -H]        帮助
 EOF
 
 exit
@@ -52,7 +55,7 @@ while [ True ]; do
 if [ "$1" = "--help" -o "$1" = "-H" ]; then
     helpu
 elif [ "$1" = "-m" ]; then
-    COMMIT_MSG="${COMMIT_MSG} -m \"${2}\""
+    COMMIT_MSG="${2}"
     shift 2
 elif [ "$1" = "--interactive" -o "$1" = "-i" ]; then
     INTERACTIVE_FLAG=true
@@ -70,14 +73,7 @@ notice_msg "[1]Status:"
 git status
 
 if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-    while true; do
-        read -p "是否继续?(y/n)" yn
-        case ${yn} in
-            [Yy]* ) break;;
-            [Nn]* ) exit;;
-            * ) echo "请输入y/n";;
-        esac
-    done
+    confirm_go_on "是否继续"
 fi
 
 # Add changes to git
@@ -88,14 +84,17 @@ git add .
 if [ "X${COMMIT_MSG}" = "X" ]; then
     if [ "${INTERACTIVE_FLAG}" = "true" ]; then
         while true; do
-            read -p "请输入提交信息: " msg
-            if [ ! "X${msg}" = "X" ]; then
-                COMMIT_MSG=${msg}
+            read -p "请输入提交信息(或者输入d使用默认提交信息): " msg
+            if [ "d" = "${msg}" ]; then
+                COMMIT_MSG="${DEFAULT_COMMIT_MSG}"
+                break
+            elif [ ! "X${msg}" = "X" ]; then
+                COMMIT_MSG="${msg}"
                 break
             fi
         done
     else
-        COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
+        COMMIT_MSG="${DEFAULT_COMMIT_MSG}"
     fi
 fi
 
@@ -103,7 +102,11 @@ notice_msg "[3]Commit ..."
 git commit -m "${COMMIT_MSG}"
 
 # Push changes to remote
+if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+    confirm_go_on "是否推送到远程"
+fi
+
 notice_msg "[4]Push ..."
-git push origin ${CURRENT_BRANCH}
+git push
 
 notice_msg "Completed!"

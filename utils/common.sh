@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.1.0
+#version: v1.2.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -43,4 +43,16 @@ function error_msg {
     echo -e "${RED}${*}${NOCOLOR}"
     echo " "
     exit
+}
+
+# 询问是否继续的函数
+function confirm_go_on {
+    while true; do
+        read -p "${1-"是否继续"}?(y/n)" yn
+        case ${yn} in
+            [Yy]* ) break;;
+            [Nn]* ) exit;;
+            * ) echo "请输入y/n";;
+        esac
+    done
 }
