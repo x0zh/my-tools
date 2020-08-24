@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.1.0
+#version: v1.2.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -25,8 +25,8 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 定义变量
 # 当前分支
 CURRENT_BRANCH=$(git_current_branch)
-# 默认的commit信息
-COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
+# commit信息
+COMMIT_MSG=""
 # 交互式的标识，如果是true，则执行完git status命令后会提示是否继续
 INTERACTIVE_FLAG=false
 
@@ -52,7 +52,7 @@ while [ True ]; do
 if [ "$1" = "--help" -o "$1" = "-H" ]; then
     helpu
 elif [ "$1" = "-m" ]; then
-    COMMIT_MSG="${2}"
+    COMMIT_MSG="${COMMIT_MSG} -m \"${2}\""
     shift 2
 elif [ "$1" = "--interactive" -o "$1" = "-i" ]; then
     INTERACTIVE_FLAG=true
@@ -85,6 +85,20 @@ notice_msg "[2]Add ..."
 git add .
 
 # Commit changes
+if [ "X${COMMIT_MSG}" = "X" ]; then
+    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+        while true; do
+            read -p "请输入提交信息: " msg
+            if [ ! "X${msg}" = "X" ]; then
+                COMMIT_MSG=${msg}
+                break
+            fi
+        done
+    else
+        COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
+    fi
+fi
+
 notice_msg "[3]Commit ..."
 git commit -m "${COMMIT_MSG}"
 

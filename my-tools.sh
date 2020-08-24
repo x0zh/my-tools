@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v3.2.4
+#version: v3.2.5
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -118,7 +118,7 @@ function uninstall_my_tools {
 
 # 版本号函数
 function my_tools_version {
-    echo && echo "v3.2.4"
+    echo && echo "v3.2.5"
 }
 
 if [ "$1" = "--help" -o "$1" = "-H" ]; then
