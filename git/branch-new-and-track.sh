@@ -31,7 +31,7 @@ NEW_BRANCH=""
 
 # 定义函数
 # 帮助函数
-function helpu {
+helpu() {
 cat << EOF
 
 usage: $0 <option>

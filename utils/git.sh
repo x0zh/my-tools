@@ -15,6 +15,6 @@
 . "${APP_HOME}/utils/common.sh"
 
 # 当前git分支
-function git_current_branch {
+git_current_branch() {
     echo $(git symbolic-ref --short -q HEAD)
 }

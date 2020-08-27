@@ -32,7 +32,7 @@ FORCE_FLAG=false
 
 # 定义函数
 # 帮助函数
-function helpu {
+helpu() {
 cat << EOF
 
 usage: $0 <option> [file-path ...]
@@ -49,7 +49,7 @@ exit
 }
 
 # 询问是否删除文件的函数
-function confirm_delete_file {
+confirm_delete_file() {
     if [ -f "$1" ]; then
         if [ "$2" = "true" ]; then
             rm -f "$1"

@@ -31,14 +31,14 @@ WHITE='\033[1;37m'
 
 # 定义函数
 # 输出提示信息
-function notice_msg {
+notice_msg() {
     echo " "
     echo -e "${GREEN}${*}${NOCOLOR}"
     echo " "
 }
 
 # 输出错误信息
-function error_msg {
+error_msg() {
     echo " "
     echo -e "${RED}${*}${NOCOLOR}"
     echo " "
@@ -46,7 +46,7 @@ function error_msg {
 }
 
 # 询问是否继续的函数
-function confirm_go_on {
+confirm_go_on() {
     while true; do
         read -p "${1-"是否继续"}?(y/n)" yn
         case ${yn} in

@@ -35,7 +35,7 @@ SHELL_RC_FILE=("${HOME}/.zshrc" "${HOME}/.bashrc")
 
 # 定义函数
 # 帮助函数
-function helpu {
+helpu() {
 cat << EOF
 
 usage: $0 <option>
@@ -52,7 +52,7 @@ EOF
 }
 
 # 提示函数
-function after_complete {
+after_complete() {
     echo " "
     echo "为了正常使用，请重启shell或者执行如下命令(取决于当前使用的shell环境): "
     echo " "
@@ -65,7 +65,7 @@ function after_complete {
 }
 
 # 安装函数
-function install_my_tools {
+install_my_tools() {
 
     notice_msg "准备安装 ${APP_HOME} ..."
 
@@ -97,7 +97,7 @@ function install_my_tools {
 }
 
 # 卸载函数
-function uninstall_my_tools {
+uninstall_my_tools() {
 
     notice_msg "准备卸载 ${APP_HOME} ..."
 
@@ -117,7 +117,7 @@ function uninstall_my_tools {
 }
 
 # 版本号函数
-function my_tools_version {
+my_tools_version() {
     echo && echo "v3.2.7"
 }
 
