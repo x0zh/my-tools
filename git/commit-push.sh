@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.2.1
+#version: v1.3.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -26,11 +26,12 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 当前分支
 CURRENT_BRANCH=$(git_current_branch)
 # commit信息
-COMMIT_MSG=""
+COMMIT_MSG=()
 # 默认的commit信息
 DEFAULT_COMMIT_MSG="Update changes $(date '+%Y-%m-%d %H:%M:%S')"
 # 交互式的标识，如果是true，则执行完git status命令后会提示是否继续
 INTERACTIVE_FLAG=false
+LOOP_INDEX=0
 
 # 定义函数
 # 帮助函数
@@ -55,7 +56,8 @@ while [ True ]; do
 if [ "$1" = "--help" -o "$1" = "-H" ]; then
     helpu
 elif [ "$1" = "-m" ]; then
-    COMMIT_MSG="${2}"
+    COMMIT_MSG[$((LOOP_INDEX++))]="${1}"
+    COMMIT_MSG[$((LOOP_INDEX++))]="${2}"
     shift 2
 elif [ "$1" = "--interactive" -o "$1" = "-i" ]; then
     INTERACTIVE_FLAG=true
@@ -81,25 +83,26 @@ notice_msg "[2]Add ..."
 git add .
 
 # Commit changes
-if [ "X${COMMIT_MSG}" = "X" ]; then
+if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
+    COMMIT_MSG[$((LOOP_INDEX++))]="-m"
     if [ "${INTERACTIVE_FLAG}" = "true" ]; then
         while true; do
             read -p "请输入提交信息(或者输入d使用默认提交信息): " msg
             if [ "d" = "${msg}" ]; then
-                COMMIT_MSG="${DEFAULT_COMMIT_MSG}"
+                COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
                 break
             elif [ ! "X${msg}" = "X" ]; then
-                COMMIT_MSG="${msg}"
+                COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
                 break
             fi
         done
     else
-        COMMIT_MSG="${DEFAULT_COMMIT_MSG}"
+        COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
     fi
 fi
 
 notice_msg "[3]Commit ..."
-git commit -m "${COMMIT_MSG}"
+git commit "${COMMIT_MSG[@]}"
 
 # Push changes to remote
 if [ "${INTERACTIVE_FLAG}" = "true" ]; then
