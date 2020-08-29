@@ -24,7 +24,7 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 
 # 定义变量
 # 模板文件，有默认值
-TEMPLATE_FILE_PATH="${APP_HOME}/my-tools-data/file-template"
+TEMPLATE_FILE_PATH="${APP_HOME}/user-data/file-template"
 # 生成的目标文件
 TARGET_FILE_PATH=""
 # 是否强制覆盖已存在的文件
@@ -57,11 +57,9 @@ confirm_delete_file() {
             while true; do
                 read -p "是否要删除${1}?(y/n)" yn
                 case ${yn} in
-                    [Yy]* )
-                        rm -f "$1"
-                        break;;
+                    [Yy]* ) rm -f "$1";;
                     [Nn]* ) exit;;
-                    * ) echo "请输入y/n";;
+                    * )     echo "请输入y/n";;
                 esac
             done
         fi

@@ -18,3 +18,8 @@
 git_current_branch() {
     echo $(git symbolic-ref --short -q HEAD)
 }
+
+# 获取远程仓库的url
+git_remote_url() {
+    echo $(git config -l | awk -F 'remote.origin.url=' '/remote\.origin\.url=/ {print $2}')
+}
