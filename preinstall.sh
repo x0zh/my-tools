@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.2.0
+#version: v1.2.1
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -34,6 +34,11 @@ add_x "${CURRENT_TOOL}"
 
 # git/branch-delete-local-remote.sh
 CURRENT_TOOL="${APP_HOME}/git/branch-delete-local-remote.sh"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# git/gitlab-merge-request.sh
+CURRENT_TOOL="${APP_HOME}/git/gitlab-merge-request.sh"
 echo "    ${CURRENT_TOOL}"
 add_x "${CURRENT_TOOL}"
 
