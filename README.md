@@ -26,6 +26,7 @@ cd my-tools
 
 chmod a+x my-tools.sh
 
+# 可以修改install-template.sh文件，自定义要安装的工具
 ./my-tools.sh --install
 ```
 

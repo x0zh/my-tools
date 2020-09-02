@@ -10,3 +10,6 @@ alias file-new=${APP_HOME}/file/new-file-with-template.sh
 
 # Maven
 alias mvn-skip-test-doc=${APP_HOME}/maven/mvn-skip-test-doc.sh
+
+# Other
+alias rm="rm -i"
