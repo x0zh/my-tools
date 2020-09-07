@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.0.0
+#version: v1.1.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -11,16 +11,16 @@
 
 set -eo pipefail
 
-if [ "X$0" = "X" ]; then
-    shift
-fi
-
-SCRIPTPATH=$(cd $(dirname "$0"); pwd)
+SCRIPTPATH=$(
+    cd "$(dirname "$0")"
+    pwd
+)
 
 # 根路径
 export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 引入git通用模块
-. "${APP_HOME}/utils/git.sh"
+# shellcheck source=/dev/null
+. "${APP_HOME}/utils/common"
 
 # 定义变量
 # 当前分支
@@ -35,41 +35,41 @@ TARGET_BRANCH=""
 # 定义函数
 # 帮助函数
 helpu() {
-cat << EOF
+    cat <<EOF
 
 usage: $0 <option>
 
 提交Gitlab合并请求。
 
 OPTIONS:
-  [--remote-url    | -R] 远程仓库地址
-  [--source-branch | -S] 合并请求的源分支
-  [--target-branch | -T] 合并请求的目标地址
-  [--help          | -H] 帮助
+  [--remote-url    | -r] 远程仓库地址
+  [--source-branch | -s] 合并请求的源分支
+  [--target-branch | -t] 合并请求的目标地址
+  [--help          | -h] 帮助
 EOF
 
-exit
+    exit
 }
 
 # 解析参数
-while [ True ]; do
-if [ "$1" = "--help" -o "$1" = "-H" ]; then
-    helpu
-elif [ "$1" = "--remote-url" -o "$1" = "-R" ]; then
-    REMOTE_URL="${2}"
-    shift 2
-elif [ "$1" = "--source-branch" -o "$1" = "-S" ]; then
-    SOURCE_BRANCH="${2}"
-    shift 2
-elif [ "$1" = "--target-branch" -o "$1" = "-T" ]; then
-    TARGET_BRANCH="${2}"
-    shift 2
-else
-    break
-fi
+while true; do
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        helpu
+    elif [ "$1" = "--remote-url" ] || [ "$1" = "-r" ]; then
+        REMOTE_URL="${2}"
+        shift 2
+    elif [ "$1" = "--source-branch" ] || [ "$1" = "-s" ]; then
+        SOURCE_BRANCH="${2}"
+        shift 2
+    elif [ "$1" = "--target-branch" ] || [ "$1" = "-t" ]; then
+        TARGET_BRANCH="${2}"
+        shift 2
+    else
+        break
+    fi
 done
 
-if [ "X${REMOTE_URL}" = "X" -o "X${SOURCE_BRANCH}" = "X" -o "X${TARGET_BRANCH}" = "X" ]; then
+if [ "X${REMOTE_URL}" = "X" ] || [ "X${SOURCE_BRANCH}" = "X" ] || [ "X${TARGET_BRANCH}" = "X" ]; then
     helpu
 fi
 

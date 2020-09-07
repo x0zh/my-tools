@@ -1,0 +1,72 @@
+#!/bin/bash
+#version: v1.3.0
+#author: zxbetter
+#license: MIT
+#contact: zhangxinbetter@gmail.com
+#site: https://zxbetter.github.io
+#time: 2020-08-20 20:42:53
+# -----------------------------------------------------------------------------
+# 在安装前执行，用于预处理
+# -----------------------------------------------------------------------------
+
+# 定义函数
+add_x() {
+    if [ -f "${1}" ]; then
+        if [ ! -x "${1}" ]; then
+            chmod a+x "${1}"
+        fi
+    fi
+}
+
+# Git tools ====================================================================
+
+echo "Git-Tools:"
+
+# git/branch-new-and-track
+CURRENT_TOOL="${APP_HOME}/git/branch-new-and-track"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# git/commit-push
+CURRENT_TOOL="${APP_HOME}/git/commit-push"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# git/branch-delete-local-remote
+CURRENT_TOOL="${APP_HOME}/git/branch-delete-local-remote"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# git/gitlab-merge-request
+CURRENT_TOOL="${APP_HOME}/git/gitlab-merge-request"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# File tools ===================================================================
+
+echo "File-Tools:"
+
+# file/new-file-with-template
+CURRENT_TOOL="${APP_HOME}/file/new-file-with-template"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# Maven tools ==================================================================
+
+echo "Maven-Tools:"
+
+# maven/mvn-skip-test-doc
+CURRENT_TOOL="${APP_HOME}/maven/mvn-skip-test-doc"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+# Net tools ==================================================================
+
+echo "Net-Tools:"
+
+# net/proxy-execute
+CURRENT_TOOL="${APP_HOME}/net/proxy-execute"
+echo "    ${CURRENT_TOOL}"
+add_x "${CURRENT_TOOL}"
+
+echo " "

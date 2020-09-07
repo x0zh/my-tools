@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.2.0
+#version: v1.3.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -50,21 +50,22 @@ confirm_go_on() {
     while true; do
         read -p "${1-"是否继续"}?(y/n)" yn
         case ${yn} in
-            [Yy]* ) break;;
-            [Nn]* ) exit;;
-            * )     echo "请输入y/n";;
+        [Yy]*) break ;;
+        [Nn]*) exit ;;
+        *) echo "请输入y/n" ;;
         esac
     done
 }
 
+# 系统相关函数 =========================================================================================
 # 获取系统名称
 # 参考: https://stackoverflow.com/a/27776822/6003235
 get_os_name() {
     case "$(uname -s)" in
-        Darwin )                        echo 'Mac';;
-        Linux )                         echo 'Linux';;
-        CYGWIN*|MINGW32*|MSYS*|MINGW* ) echo 'Windows';;
-        * )                             echo 'Other';;
+    Darwin) echo 'Mac' ;;
+    Linux) echo 'Linux' ;;
+    CYGWIN* | MINGW32* | MSYS* | MINGW*) echo 'Windows' ;;
+    *) echo 'Other' ;;
     esac
 }
 
@@ -76,19 +77,30 @@ open_url() {
     fi
 
     case "$(get_os_name)" in
-        Mac )     open "$@";;
-        Linux )
-            if command -v xdg-open > /dev/null; then
-                xdg-open "$@"
-            else
-                echo "xdg-open命令不存在, 请手动在浏览器打开："
-                echo "$@"
-            fi
-        ;;
-        Windows ) start "$@";;
-        Other )
-            echo "未能识别的系统, 请手动在浏览器打开："
+    Mac) open "$@" ;;
+    Linux)
+        if command -v xdgpen > /dev/null; then
+            xdgpen "$@"
+        else
+            echo "xdgpen命令不存在, 请手动在浏览器打开："
             echo "$@"
+        fi
+        ;;
+    Windows) start "$@" ;;
+    Other)
+        echo "未能识别的系统, 请手动在浏览器打开："
+        echo "${*}"
         ;;
     esac
+}
+
+# Git相关函数 ===========================================================================================
+# 当前Git分支
+git_current_branch() {
+    git symbolic-ref --short -q HEAD
+}
+
+# 获取远程仓库的url
+git_remote_url() {
+    git config -l | awk -F 'remote.origin.url=' '/remote\.origin\.url=/ {print $2}'
 }

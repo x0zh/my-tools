@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.0.0
+#version: v1.1.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -11,16 +11,16 @@
 
 set -eo pipefail
 
-if [ "X$0" = "X" ]; then
-    shift
-fi
-
-SCRIPTPATH=$(cd $(dirname "$0"); pwd)
+SCRIPTPATH=$(
+    cd "$(dirname "$0")"
+    pwd
+)
 
 # 根路径
 export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 引入通用模块
-. "${APP_HOME}/utils/common.sh"
+# shellcheck source=/dev/null
+. "${APP_HOME}"/utils/common
 
 # 定义变量
 # 模板文件，有默认值
@@ -33,19 +33,19 @@ FORCE_FLAG=false
 # 定义函数
 # 帮助函数
 helpu() {
-cat << EOF
+    cat <<EOF
 
-usage: $0 <option> [file-path ...]
+usage: $0 [option] <file-path ...>
 
 根据模板文件生成新文件。
 
 OPTIONS:
   [--template | -t] [template-file-path] 指定模板文件路径
   [--force    | -f]                      强制覆盖已存在的文件
-  [--help     | -H]                      帮助
+  [--help     | -h]                      帮助
 EOF
 
-exit
+    exit
 }
 
 # 询问是否删除文件的函数
@@ -57,9 +57,9 @@ confirm_delete_file() {
             while true; do
                 read -p "是否要删除${1}?(y/n)" yn
                 case ${yn} in
-                    [Yy]* ) rm -f "$1";;
-                    [Nn]* ) exit;;
-                    * )     echo "请输入y/n";;
+                [Yy]*) rm -f "$1" ;;
+                [Nn]*) exit ;;
+                *) echo "请输入y/n" ;;
                 esac
             done
         fi
@@ -67,23 +67,23 @@ confirm_delete_file() {
 }
 
 # 解析参数
-while [ true ]; do
-if [ "$1" = "--help" -o "$1" = "-H" ]; then
-    helpu
-elif [ "$1" = "--template" -o "$1" = "-t" ]; then
-    TEMPLATE_FILE_PATH="${2}"
-    shift 2
-elif [ "$1" = "--force" -o "$1" = "-f" ]; then
-    FORCE_FLAG=true
-    shift 1
-else
-    break
-fi
+while true; do
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        helpu
+    elif [ "$1" = "--template" ] || [ "$1" = "-t" ]; then
+        TEMPLATE_FILE_PATH="${2}"
+        shift 2
+    elif [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
+        FORCE_FLAG=true
+        shift 1
+    else
+        break
+    fi
 done
 
-TARGET_FILE_PATH=( "${@}" )
+TARGET_FILE_PATH=("${@}")
 
-if [ "X${TARGET_FILE_PATH}" = "X" ]; then
+if [ ${#TARGET_FILE_PATH[@]} -eq 0 ]; then
     helpu
 fi
 
@@ -100,7 +100,7 @@ for file_path in ${TARGET_FILE_PATH[*]}; do
     confirm_delete_file "${file_path}" "${FORCE_FLAG}"
 
     sed -e "s {{NOW_TIME}} $(date '+%Y-%m-%d\ %H:%M:%S') g" \
-    "${TEMPLATE_FILE_PATH}" > "${file_path}"
+        "${TEMPLATE_FILE_PATH}" >"${file_path}"
 
     echo "    ${file_path}"
 done

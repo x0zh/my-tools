@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.3.0
+#version: v1.4.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -11,16 +11,16 @@
 
 set -eo pipefail
 
-if [ "X$0" = "X" ]; then
-    shift
-fi
-
-SCRIPTPATH=$(cd $(dirname "$0"); pwd)
+SCRIPTPATH=$(
+    cd "$(dirname "$0")"
+    pwd
+)
 
 # 根路径
 export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 引入git通用模块
-. "${APP_HOME}/utils/git.sh"
+# shellcheck source=/dev/null
+. "${APP_HOME}/utils/common"
 
 # 定义变量
 # 当前分支
@@ -36,35 +36,35 @@ LOOP_INDEX=0
 # 定义函数
 # 帮助函数
 helpu() {
-cat << EOF
+    cat <<EOF
 
-usage: $0 <option>
+usage: $0 [option]
 
 提交当前分支的变更，并推送到远程。
 
 OPTIONS:
-  [--interactive | -i] 交互式执行
-  [-m] commitMessage   指定提交信息
-  [--help | -H]        帮助
+  [--interactive | -i]                 交互式执行
+  [-m                ] <commitMessage>   指定提交信息
+  [--help        | -h]                 帮助
 EOF
 
-exit
+    exit
 }
 
 # 解析参数
-while [ True ]; do
-if [ "$1" = "--help" -o "$1" = "-H" ]; then
-    helpu
-elif [ "$1" = "-m" ]; then
-    COMMIT_MSG[$((LOOP_INDEX++))]="${1}"
-    COMMIT_MSG[$((LOOP_INDEX++))]="${2}"
-    shift 2
-elif [ "$1" = "--interactive" -o "$1" = "-i" ]; then
-    INTERACTIVE_FLAG=true
-    shift 1
-else
-    break
-fi
+while true; do
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        helpu
+    elif [ "$1" = "-m" ]; then
+        COMMIT_MSG[$((LOOP_INDEX++))]="${1}"
+        COMMIT_MSG[$((LOOP_INDEX++))]="${2}"
+        shift 2
+    elif [ "$1" = "--interactive" ] || [ "$1" = "-i" ]; then
+        INTERACTIVE_FLAG=true
+        shift 1
+    else
+        break
+    fi
 done
 
 # 执行逻辑

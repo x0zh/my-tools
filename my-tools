@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v3.3.3
+#version: v3.4.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -11,24 +11,24 @@
 
 set -eo pipefail
 
-if [ "X$0" = "X" ]; then
-    shift
-fi
-
 # 应用的目录
-export APP_HOME=$(cd $(dirname "$0"); pwd)
-. "${APP_HOME}/utils/common.sh"
+export APP_HOME=$(
+    cd "$(dirname "$0")"
+    pwd
+)
+# shellcheck source=/dev/null
+. "${APP_HOME}/utils/common"
 
 # 定义变量
 # 安装使用的预处理脚本的路径
-PRE_INSTALL_SHELL="${APP_HOME}/preinstall.sh"
+PRE_INSTALL_SHELL="${APP_HOME}/preinstall"
 # 安装文件的模板
-INSTALL_TEMPLATE="${APP_HOME}/install-template.sh"
+INSTALL_TEMPLATE="${APP_HOME}/install-template"
 
 # 安装目录
 APP_DIST="${APP_HOME}/dist"
 # 安装文件
-INSTALL_FILE="${APP_DIST}/my-tools.sh"
+INSTALL_FILE="${APP_DIST}/my-tools"
 
 # shell的配置文件
 SHELL_RC_FILE=("${HOME}/.zshrc" "${HOME}/.bashrc")
@@ -36,18 +36,18 @@ SHELL_RC_FILE=("${HOME}/.zshrc" "${HOME}/.bashrc")
 # 定义函数
 # 帮助函数
 helpu() {
-cat << EOF
+    cat <<EOF
 
 usage: $0 <option>
 
 提供便利的命令行工具
 
 OPTIONS:
-  [--install   | -I] 安装
-  [--uninstall | -U] 卸载
-  [--reinstall | -R] 重装
-  [--version   | -V] 版本
-  [--help      | -H] 帮助
+  [--install   | -i] 安装
+  [--uninstall | -u] 卸载
+  [--reinstall | -r] 重装
+  [--version   | -v] 版本
+  [--help      | -h] 帮助
 EOF
 }
 
@@ -71,8 +71,9 @@ install_my_tools() {
 
     echo "预处理 ..."
     echo " "
-    
+
     # 预处理
+    # shellcheck source=/dev/null
     . "${PRE_INSTALL_SHELL}"
 
     if [ ! -d "${APP_DIST}" ]; then
@@ -83,13 +84,13 @@ install_my_tools() {
     echo " "
     echo "开始安装 ..."
     touch "${INSTALL_FILE}"
-    sed "s \${APP_HOME} ${APP_HOME} g" "${INSTALL_TEMPLATE}" > "${INSTALL_FILE}"
+    sed "s \${APP_HOME} ${APP_HOME} g" "${INSTALL_TEMPLATE}" >"${INSTALL_FILE}"
     echo "[完成安装] ${INSTALL_FILE}"
 
     for rc_file in ${SHELL_RC_FILE[*]}; do
         if [ -f "${rc_file}" ]; then
             echo "[建立关联] ${rc_file}"
-            echo ". ${INSTALL_FILE} #MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT" >> ${rc_file}
+            echo ". ${INSTALL_FILE} #MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT" >>${rc_file}
         fi
     done
 
@@ -118,23 +119,23 @@ uninstall_my_tools() {
 
 # 版本号函数
 my_tools_version() {
-    echo && echo "v3.3.3"
+    echo && echo "v3.4.0"
 }
 
-if [ "$1" = "--help" -o "$1" = "-H" ]; then
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     helpu
-elif [ "$1" = "--install" -o "$1" = "-I" ]; then
+elif [ "$1" = "--install" ] || [ "$1" = "-i" ]; then
     install_my_tools
     after_complete
-elif [ "$1" = "--uninstall" -o "$1" = "-U" ]; then
+elif [ "$1" = "--uninstall" ] || [ "$1" = "-u" ]; then
     uninstall_my_tools
     after_complete
-elif [ "$1" = "--reinstall" -o "$1" = "-R" ]; then
+elif [ "$1" = "--reinstall" ] || [ "$1" = "-r" ]; then
     uninstall_my_tools
     install_my_tools
     after_complete
-elif [ "$1" = "--version" -o "$1" = "-V" ]; then
+elif [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
     my_tools_version
 else
-   helpu
+    helpu
 fi

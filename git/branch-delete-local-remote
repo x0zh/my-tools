@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.0.1
+#version: v1.1.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -13,16 +13,16 @@
 
 set -eo pipefail
 
-if [ "X$0" = "X" ]; then
-    shift
-fi
-
-SCRIPTPATH=$(cd $(dirname "$0"); pwd)
+SCRIPTPATH=$(
+    cd "$(dirname "$0")"
+    pwd
+)
 
 # 根路径
 export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 引入git通用模块
-. "${APP_HOME}/utils/git.sh"
+# shellcheck source=/dev/null
+. "${APP_HOME}/utils/common"
 
 # 定义变量
 DELETE_BRANCH=""
@@ -30,30 +30,30 @@ DELETE_BRANCH=""
 # 定义函数
 # 帮助函数
 helpu() {
-cat << EOF
+    cat <<EOF
 
 usage: $0 <option>
 
 删除指定的本地分支和对应的远程分支。
 
 OPTIONS:
-  [-b] [branchName ...] 指定分支名，多个用空格隔开 
-  [--help | -H]         帮助
+  [-b         ] [branchName ...] 指定分支名，多个用空格隔开 
+  [--help | -h]                  帮助
 EOF
 
-exit
+    exit
 }
 
 # 解析参数
-while [ True ]; do
-if [ "$1" = "--help" -o "$1" = "-H" ]; then
-    helpu
-elif [ "$1" = "-b" ]; then
-    shift 1
-    DELETE_BRANCH="${*}"
-else
-    break
-fi
+while true; do
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        helpu
+    elif [ "$1" = "-b" ]; then
+        shift 1
+        DELETE_BRANCH="${*}"
+    else
+        break
+    fi
 done
 
 if [ "X${DELETE_BRANCH}" = "X" ]; then

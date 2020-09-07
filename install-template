@@ -1,0 +1,18 @@
+#!/bin/bash
+# Git
+alias git-new-branch=${APP_HOME}/git/branch-new-and-track
+alias git-commit-push=${APP_HOME}/git/commit-push
+alias git-delete-branch=${APP_HOME}/git/branch-delete-local-remote
+alias gitlab-merge-request=${APP_HOME}/git/gitlab-merge-request
+
+# File
+alias file-new-with-template=${APP_HOME}/file/new-file-with-template
+
+# Maven
+alias mvn-skip-test-doc=${APP_HOME}/maven/mvn-skip-test-doc
+
+# Net
+alias proxy-execute=${APP_HOME}/net/proxy-execute
+
+# Other
+alias rm="rm -i"
