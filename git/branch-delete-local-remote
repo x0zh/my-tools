@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.1.0
+#version: v1.2.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -24,9 +24,6 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # shellcheck source=/dev/null
 . "${APP_HOME}/utils/common"
 
-# 定义变量
-DELETE_BRANCH=""
-
 # 定义函数
 # 帮助函数
 helpu() {
@@ -50,22 +47,21 @@ while true; do
         helpu
     elif [ "$1" = "-b" ]; then
         shift 1
-        DELETE_BRANCH="${*}"
     else
         break
     fi
 done
 
-if [ "X${DELETE_BRANCH}" = "X" ]; then
+if [ "X${*}" = "X" ]; then
     helpu
 fi
 
 # 执行逻辑
 
-notice_msg "1)删除本地分支 ${DELETE_BRANCH}"
-git branch -D "${DELETE_BRANCH}"
+notice_msg "1)删除本地分支 ${*}"
+git branch -D "${@}"
 
-notice_msg "2)删除远程分支 ${DELETE_BRANCH}"
-git push origin --delete "${DELETE_BRANCH}"
+notice_msg "2)删除远程分支 ${*}"
+git push origin --delete "${@}"
 
 notice_msg "完成!"
