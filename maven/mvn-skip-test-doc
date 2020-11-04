@@ -46,7 +46,7 @@ fi
 
 # 执行逻辑
 
-notice_msg "开始执行Maven命令: ${*}"
+notice_msg "开始执行Maven命令: mvn ${*} -DskipTests=true -Dmaven.javadoc.skip=true"
 
 mvn "${@}" -DskipTests=true -Dmaven.javadoc.skip=true
 

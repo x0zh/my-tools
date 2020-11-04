@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.3.0
+#version: v1.3.1
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -9,7 +9,9 @@
 # 通用模块，提供通用的功能
 # -----------------------------------------------------------------------------
 
-# 定义变量
+# ~ 定义变量
+# #############################################################################
+
 # Colors
 # 参考: https://gist.github.com/jonsuh/3c89c004888dfc7352be
 NOCOLOR='\033[0m'
@@ -29,7 +31,9 @@ LIGHTPURPLE='\033[1;35m'
 LIGHTCYAN='\033[1;36m'
 WHITE='\033[1;37m'
 
-# 定义函数
+# ~ 通用函数
+# #############################################################################
+
 # 输出提示信息
 notice_msg() {
     echo " "
@@ -57,7 +61,9 @@ confirm_go_on() {
     done
 }
 
-# 系统相关函数 =========================================================================================
+# ~ 系统相关函数
+# #############################################################################
+
 # 获取系统名称
 # 参考: https://stackoverflow.com/a/27776822/6003235
 get_os_name() {
@@ -70,16 +76,13 @@ get_os_name() {
 }
 
 # 在浏览器打开url
+# $1 要打开的url
 # 参考：https://stackoverflow.com/a/38147878/6003235
 open_url() {
-    if [ ${#} -eq 0 ]; then
-        error_msg "open_url函数需要指定url作为参数"
-    fi
-
     case "$(get_os_name)" in
     Mac) open "$@" ;;
     Linux)
-        if command -v xdgpen > /dev/null; then
+        if command -v xdgpen >/dev/null; then
             xdgpen "$@"
         else
             echo "xdgpen命令不存在, 请手动在浏览器打开："
@@ -94,7 +97,42 @@ open_url() {
     esac
 }
 
-# Git相关函数 ===========================================================================================
+# 结束指定的进程
+# $1 pid
+# $2 超时时间，默认为10秒
+kill_by_pid() {
+    pid=$1
+    count=$2
+    n=0
+
+    if [ "x${count}" = "x" ]; then
+        count=10
+    fi
+
+    while [ $n -lt $count ]; do
+        n=$((n + 1))
+
+        # 判断进程是否结束
+        kill -0 ${pid}
+        if [ $? -ne 0 ]; then
+            echo "Success!"
+            break
+        else
+            if [ $n -ne 0 ]; then
+                sleep 1
+            fi
+            if [ $n -eq ${count} ]; then
+                kill -9 ${pid}
+            else
+                kill -15 ${pid}
+            fi
+        fi
+    done
+}
+
+# Git相关函数
+# #############################################################################
+
 # 当前Git分支
 git_current_branch() {
     git symbolic-ref --short -q HEAD

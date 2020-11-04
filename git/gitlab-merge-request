@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v1.1.0
+#version: v1.1.1
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -70,6 +70,8 @@ while true; do
 done
 
 if [ "X${REMOTE_URL}" = "X" ] || [ "X${SOURCE_BRANCH}" = "X" ] || [ "X${TARGET_BRANCH}" = "X" ]; then
+    HOME_URL="$(git_remote_url)"
+    open_url "${HOME_URL%.git*}/-/merge_requests"
     helpu
 fi
 
