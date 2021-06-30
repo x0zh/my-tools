@@ -1,5 +1,5 @@
 #!/bin/bash
-#version: v3.4.3
+#version: v3.5.0
 #author: zxbetter
 #license: MIT
 #contact: zhangxinbetter@gmail.com
@@ -46,6 +46,7 @@ OPTIONS:
   [--install   | -i] 安装
   [--uninstall | -u] 卸载
   [--reinstall | -r] 重装
+  [--list      | -l] 列出所有命令
   [--version   | -v] 版本
   [--help      | -h] 帮助
 EOF
@@ -117,9 +118,19 @@ uninstall_my_tools() {
     notice_msg "卸载完成!"
 }
 
+# 列出所有命令
+list_all_tools() {
+    if [ -f "${INSTALL_FILE}" ]; then
+        sed -e "/^#/d" -e "/^$/d" "${INSTALL_FILE}"
+    else
+        echo "尚未安装任何命令"
+        helpu
+    fi
+}
+
 # 版本号函数
 my_tools_version() {
-    echo && echo "v3.4.3"
+    echo && echo "v3.5.0"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
@@ -134,6 +145,8 @@ elif [ "$1" = "--reinstall" ] || [ "$1" = "-r" ]; then
     uninstall_my_tools
     install_my_tools
     after_complete
+elif [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
+    list_all_tools
 elif [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
     my_tools_version
 else

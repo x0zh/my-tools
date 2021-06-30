@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# My-tools
+alias my-tools=${APP_HOME}/my-tools
+
 # Git
 alias git-new-branch=${APP_HOME}/git/branch-new-and-track
 alias git-commit-push=${APP_HOME}/git/commit-push
