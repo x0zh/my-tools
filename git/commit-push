@@ -6,7 +6,7 @@
 #site: https://zxbetter.github.io
 #time: 2020-08-21 16:00:00
 # -----------------------------------------------------------------------------
-# git status ==> git add . ==> git commit ==> git push
+# git status ==> git add . ==> git commit ==> git pull --rebase ==> git push
 # ------------------------------------------------------------------------------
 
 set -eo pipefail
@@ -104,12 +104,15 @@ fi
 notice_msg "[3]Commit ..."
 git commit "${COMMIT_MSG[@]}"
 
+notice_msg "[4]Pull ..."
+git pull --rebase
+
 # Push changes to remote
 if [ "${INTERACTIVE_FLAG}" = "true" ]; then
     confirm_go_on "是否推送到远程"
 fi
 
-notice_msg "[4]Push ..."
+notice_msg "[5]Push ..."
 git push
 
 notice_msg "Completed!"
