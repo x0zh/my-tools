@@ -20,3 +20,4 @@ alias proxy-execute=${APP_HOME}/net/proxy-execute
 
 # Other
 alias rm="rm -i"
+alias get-date="echo $(date '+%Y-%m-%d %H:%M:%S')"
