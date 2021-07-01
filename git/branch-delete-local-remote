@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.2.0
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-19 21:06:00
+# version: v1.2.1
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-19 21:06:00
+# alias: git-delete-branch
 # -----------------------------------------------------------------------------
 # 脚本执行逻辑：
 #     1. 删除指定的本地分支；

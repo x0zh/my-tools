@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.1.0
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-22 16:51:12
+# version: v1.1.1
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-22 16:51:12
+# alias: mvn-skip-test-doc
 # -----------------------------------------------------------------------------
 # 执行maven命令时，跳过单元测试，跳过生成JavaDoc文档。
 # ------------------------------------------------------------------------------

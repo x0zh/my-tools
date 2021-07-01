@@ -1,29 +1,28 @@
 #!/bin/bash
-#version: v3.5.1
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-20 20:30:00
+# version: v4.0.0
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-20 20:30:00
+# alias: my-tools
 # -----------------------------------------------------------------------------
 # My-Tools管理脚本，用于安装、卸载、重装等操作。
 # -----------------------------------------------------------------------------
 
-set -eo pipefail
+set -e
 
 # 应用的目录
-export APP_HOME=$(
+APP_HOME=$(
     cd "$(dirname "$0")"
     pwd
 )
+export APP_HOME=${APP_HOME}
+
 # shellcheck source=/dev/null
 . "${APP_HOME}/utils/common"
 
 # 定义变量
-# 安装使用的预处理脚本的路径
-PRE_INSTALL_SHELL="${APP_HOME}/preinstall"
-# 安装文件的模板
-INSTALL_TEMPLATE="${APP_HOME}/install-template"
 
 # 安装目录
 APP_DIST="${APP_HOME}/dist"
@@ -45,7 +44,6 @@ usage: $0 <option>
 OPTIONS:
   [--install   | -i] 安装
   [--uninstall | -u] 卸载
-  [--reinstall | -r] 重装
   [--list      | -l] 列出所有命令
   [--version   | -v] 版本
   [--help      | -h] 帮助
@@ -65,28 +63,32 @@ after_complete() {
     echo " "
 }
 
+add_x() {
+    if [ -f "${1}" ]; then
+        if [ ! -x "${1}" ]; then
+            chmod a+x "${1}"
+        fi
+    fi
+}
+
 # 安装函数
 install_my_tools() {
 
-    notice_msg "准备安装 ${APP_HOME} ..."
-
-    echo "预处理 ..."
-    echo " "
-
-    # 预处理
-    # shellcheck source=/dev/null
-    . "${PRE_INSTALL_SHELL}"
+    notice_msg "准备安装 ${APP_HOME}"
 
     if [ ! -d "${APP_DIST}" ]; then
         mkdir "${APP_DIST}"
-        echo "[完成创建] ${APP_DIST}"
+        echo "[创建] ${APP_DIST}"
     fi
 
-    echo " "
-    echo "开始安装 ..."
+    if [ -f "${INSTALL_FILE}" ]; then
+        rm -f "${INSTALL_FILE}"
+    fi
+
     touch "${INSTALL_FILE}"
-    sed "s \${APP_HOME} ${APP_HOME} g" "${INSTALL_TEMPLATE}" >"${INSTALL_FILE}"
-    echo "[完成安装] ${INSTALL_FILE}"
+    echo "[创建] ${INSTALL_FILE}"
+    
+    install_one_tool "${APP_HOME}"
 
     for rc_file in ${SHELL_RC_FILE[*]}; do
         if [ -f "${rc_file}" ]; then
@@ -98,20 +100,74 @@ install_my_tools() {
     notice_msg "安装完成!"
 }
 
+install_one_tool() {
+    local ignore_file="${APP_HOME}/.my-toolsignore"
+    local idx=0
+    local ignore_list
+    local ignore_flag="0"
+    local idx_file
+    local command_alias
+
+    # 1. 读取要忽略的文件
+    if [ -f "${ignore_file}" ]; then
+        # || [ -n "$line" ] 防止文件最后一行不是空行时，不能被读到的问题
+        while IFS= read -r line || [ -n "$line" ]; do
+            # 去掉#开头的注释
+            if [ "${line%${line#?}}"x != '#x' ]; then
+                ignore_list[${idx}]="${line}"
+                idx=$((idx+1))
+            fi
+        done < "${ignore_file}"
+    fi
+    # force ignore .git directory
+    ignore_list[idx]=".git"
+
+    # 2. 安装
+    for item in "${1}"/*; do
+        idx_file="${item#*${APP_HOME}/}"
+        ignore_flag="0"
+
+        # 2.1 判断是否被忽略
+        for ignore_item in "${ignore_list[@]}"; do
+            if [ "${ignore_item}" == "${idx_file}" ]; then
+                ignore_flag="1"
+                break
+            fi
+        done
+
+        # 2.2 安装
+        if [ ${ignore_flag} == "0" ]; then
+            if [ -d "${item}" ]; then
+                # 递归安装
+                install_one_tool "${item}"
+            elif [ -f "${item}" ]; then
+                # 获取命令别名
+                command_alias=$(grep -E '^#\s*alias\s*:\s*\S+' "${item}" | awk -F ': ?' '{print $2}' | head -n 1)
+
+                if [ "${command_alias}x" != "x" ]; then
+                    add_x "${item}"
+                    printf "alias %s=%s\n" "${command_alias}" "${item}" >> "${INSTALL_FILE}"
+                    echo "[安装] ${item}"
+                fi
+            fi
+        fi
+    done
+}
+
 # 卸载函数
 uninstall_my_tools() {
 
-    notice_msg "准备卸载 ${APP_HOME} ..."
+    notice_msg "准备卸载 ${APP_HOME}"
 
     for rc_file in ${SHELL_RC_FILE[*]}; do
         if [ -f "${rc_file}" ]; then
-            echo "[解除关联] ${rc_file}"
-            sed -i.bak "/#MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT/d" ${rc_file}
+            echo "[解除链接] ${rc_file}"
+            sed -i.bak "/#MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT/d" "${rc_file}"
         fi
     done
 
     if [ -d "${APP_DIST}" ]; then
-        echo "[完成删除] ${APP_DIST}"
+        echo "[删除] ${APP_DIST}"
         rm -rf "${APP_DIST}"
     fi
 
@@ -130,20 +186,17 @@ list_all_tools() {
 
 # 版本号函数
 my_tools_version() {
-    echo && echo "v3.5.1"
+    echo && echo "v4.0.0"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     helpu
 elif [ "$1" = "--install" ] || [ "$1" = "-i" ]; then
+    uninstall_my_tools
     install_my_tools
     after_complete
 elif [ "$1" = "--uninstall" ] || [ "$1" = "-u" ]; then
     uninstall_my_tools
-    after_complete
-elif [ "$1" = "--reinstall" ] || [ "$1" = "-r" ]; then
-    uninstall_my_tools
-    install_my_tools
     after_complete
 elif [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
     list_all_tools

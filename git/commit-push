@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.5.0
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-21 16:00:00
+# version: v1.5.1
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-21 16:00:00
+# alias: git-commit-push
 # -----------------------------------------------------------------------------
 # git status ==> git add . ==> git commit ==> git pull --rebase ==> git push
 # ------------------------------------------------------------------------------

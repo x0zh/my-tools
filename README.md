@@ -6,7 +6,7 @@
 
 ## 安装和使用
 
-> mac自带的命令行工具是基于BSD的，可能和Linux的命令行表现不一致，可以安装GNU的命令行工具代替Mac自带的命令行工具。
+> 1. Mac自带的命令行工具是基于BSD的，可能和Linux的命令行表现不一致，可以安装GNU的命令行工具代替Mac自带的命令行工具。
 
 ```shell
 brew install coreutils
@@ -17,6 +17,8 @@ PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnub
 MANPATH=/usr/local/opt/coreutils/libexec/gnuman:/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH
 ```
 
+> 2. Windows请使用GitBash安装。
+
 ### 安装
 
 ```shell
@@ -26,7 +28,6 @@ cd my-tools
 
 chmod a+x my-tools
 
-# 可以修改install-template文件，自定义要安装的工具
 ./my-tools --install
 ```
 
@@ -69,12 +70,13 @@ My-Tools不仅使用起来很方便，同时也可以很方便地修改或者增
 
 ### 增加工具
 
-以 `file/new-file-with-template` 工具为例，演示如何增加工具。
+在根目录或者子目录下创建shell脚本文件，编写完脚本后执行 `./my-tools -r` 重新安装即可。
 
-1. 创建并编写 `file/new-file-with-template` 脚本；
-2. 在 `preinstall` 脚本中添加安装My-Tools时，处理 `file/new-file-with-template` 的逻辑；
-3. 在 `install-template` 模板中添加 `file/new-file-with-template` 工具的别名；
-4. 执行 `./my-tools -r`。
+> TIP: shell脚本文件中需要在注释中指定命令的别名才能正常安装，格式如下
+
+```shell
+# alias: xxx
+````
 
 ## License
 

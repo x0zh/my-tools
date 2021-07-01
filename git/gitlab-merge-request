@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.1.1
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-29 14:35:55
+# version: v1.1.2
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-29 14:35:55
+# alias: gitlab-merge-request
 # -----------------------------------------------------------------------------
 # 提交Gitlab合并请求
 # ------------------------------------------------------------------------------

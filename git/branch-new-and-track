@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.1.0
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-19 21:06:00
+# version: v1.1.1
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-19 21:06:00
+# alias: git-new-branch
 # -----------------------------------------------------------------------------
 # 脚本执行逻辑：
 #     1. 根据入参创建新分支(基于当前分支创建)；

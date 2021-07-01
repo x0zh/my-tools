@@ -1,10 +1,10 @@
 #!/bin/bash
-#version: v1.3.1
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-19 21:30:00
+# version: v1.3.2
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-19 21:30:00
 # -----------------------------------------------------------------------------
 # 通用模块，提供通用的功能
 # -----------------------------------------------------------------------------

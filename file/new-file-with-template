@@ -1,10 +1,11 @@
 #!/bin/bash
-#version: v1.1.0
-#author: zxbetter
-#license: MIT
-#contact: zhangxinbetter@gmail.com
-#site: https://zxbetter.github.io
-#time: 2020-08-22 16:07:00
+# version: v1.1.1
+# author: zxbetter
+# license: MIT
+# contact: zhangxinbetter@gmail.com
+# site: https://zxbetter.github.io
+# time: 2020-08-22 16:07:00
+# alias: file-new-with-template
 # -----------------------------------------------------------------------------
 # 根据模板文件生成新文件
 # ------------------------------------------------------------------------------
