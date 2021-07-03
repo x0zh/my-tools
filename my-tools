@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v4.0.0
+# version: v4.1.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -28,6 +28,10 @@ export APP_HOME=${APP_HOME}
 APP_DIST="${APP_HOME}/dist"
 # 安装文件
 INSTALL_FILE="${APP_DIST}/my-tools"
+# 配置忽略安装的文件
+IGNORE_FILE="${APP_HOME}/.my-toolsignore"
+# 忽略安装的文件
+IGNORE_LIST=(".git" "README.md" ".my-toolsignore" ".gitignore" "dist")
 
 # shell的配置文件
 SHELL_RC_FILE=("${HOME}/.zshrc" "${HOME}/.bashrc")
@@ -73,6 +77,7 @@ add_x() {
 
 # 安装函数
 install_my_tools() {
+    local idx=${#IGNORE_LIST[@]}
 
     notice_msg "准备安装 ${APP_HOME}"
 
@@ -87,12 +92,25 @@ install_my_tools() {
 
     touch "${INSTALL_FILE}"
     echo "[创建] ${INSTALL_FILE}"
+
+    # 读取要忽略的文件
+    if [ -f "${IGNORE_FILE}" ]; then
+        # || [ -n "$line" ] 防止文件最后一行不是空行时，不能被读到的问题
+        while IFS= read -r line || [ -n "$line" ]; do
+            # 去掉#开头的注释
+            if [ "${line%${line#?}}"x != '#x' ]; then
+                IGNORE_LIST[${idx}]="${line}"
+                idx=$((idx+1))
+            fi
+        done < "${IGNORE_FILE}"
+    fi
+    echo "[忽略] ${IGNORE_LIST[*]}"
     
     install_one_tool "${APP_HOME}"
 
     for rc_file in ${SHELL_RC_FILE[*]}; do
         if [ -f "${rc_file}" ]; then
-            echo "[建立关联] ${rc_file}"
+            echo "[创建链接] ${rc_file}"
             echo ". ${INSTALL_FILE} #MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT" >>${rc_file}
         fi
     done
@@ -101,26 +119,9 @@ install_my_tools() {
 }
 
 install_one_tool() {
-    local ignore_file="${APP_HOME}/.my-toolsignore"
-    local idx=0
-    local ignore_list
     local ignore_flag="0"
     local idx_file
     local command_alias
-
-    # 1. 读取要忽略的文件
-    if [ -f "${ignore_file}" ]; then
-        # || [ -n "$line" ] 防止文件最后一行不是空行时，不能被读到的问题
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 去掉#开头的注释
-            if [ "${line%${line#?}}"x != '#x' ]; then
-                ignore_list[${idx}]="${line}"
-                idx=$((idx+1))
-            fi
-        done < "${ignore_file}"
-    fi
-    # force ignore .git directory
-    ignore_list[idx]=".git"
 
     # 2. 安装
     for item in "${1}"/*; do
@@ -128,7 +129,7 @@ install_one_tool() {
         ignore_flag="0"
 
         # 2.1 判断是否被忽略
-        for ignore_item in "${ignore_list[@]}"; do
+        for ignore_item in "${IGNORE_LIST[@]}"; do
             if [ "${ignore_item}" == "${idx_file}" ]; then
                 ignore_flag="1"
                 break
@@ -186,7 +187,7 @@ list_all_tools() {
 
 # 版本号函数
 my_tools_version() {
-    echo && echo "v4.0.0"
+    echo && echo "v4.1.0"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
