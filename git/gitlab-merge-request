@@ -1,14 +1,14 @@
 #!/bin/bash
-# version: v1.1.2
+# version: v1.1.3
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
 # site: https://zxbetter.github.io
 # time: 2020-08-29 14:35:55
 # alias: gitlab-merge-request
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 # 提交Gitlab合并请求
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
 
 set -eo pipefail
 
@@ -79,10 +79,10 @@ fi
 # 执行逻辑
 
 notice_msg "提交Gitlab合并请求"
-echo "    当前分支: ${CURRENT_BRANCH}"
+echo "    当前分支    : ${CURRENT_BRANCH}"
 echo "    远程仓库地址: ${REMOTE_URL}"
-echo "    源分支: ${SOURCE_BRANCH}"
-echo "    目标分支: ${TARGET_BRANCH}"
+echo "    源分支      : ${SOURCE_BRANCH}"
+echo "    目标分支    : ${TARGET_BRANCH}"
 
 echo " "
 MERGE_URL="${REMOTE_URL%.git*}/-/merge_requests/new?merge_request%5Bsource_branch%5D=${SOURCE_BRANCH}&merge_request%5Btarget_branch%5D=${TARGET_BRANCH}"
