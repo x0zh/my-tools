@@ -37,7 +37,6 @@ WHITE='\033[1;37m'
 # 输出提示信息
 notice_msg() {
     echo -e "${GREEN}${*}${NOCOLOR}"
-    echo " "
 }
 
 # 输出错误信息
@@ -57,6 +56,26 @@ confirm_go_on() {
         *) echo "请输入y/n" ;;
         esac
     done
+}
+
+# 询问是否继续的函数
+confirm_go_on_v2() {
+    local flag
+    while true; do
+        read -p "${*-"是否继续"}?(y/n)" yn
+        case ${yn} in
+        [Yy]*)
+            flag="Y"
+            break
+        ;;
+        [Nn]*)
+            flag="N"
+            break
+        ;;
+        *) echo "请输入y/n" ;;
+        esac
+    done
+    echo "${flag}"
 }
 
 # ~ 系统相关函数

@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.5.2
+# version: v2.0.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -8,7 +8,7 @@
 # alias: git-commit-push
 # ----------------------------------------------------------------------------------------------------------------------
 # git status ==> git add . ==> git commit ==> git pull --rebase ==> git push
-# -----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 
 set -eo pipefail
 
@@ -72,48 +72,45 @@ done
 
 notice_msg "Current branch: ${CURRENT_BRANCH}"
 
-notice_msg "[1]Status:"
-git status
-
-if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-    confirm_go_on "是否继续"
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git status\")" = "Y" ]; then
+    git status
 fi
 
 # Add changes to git
-notice_msg "[2]Add ..."
-git add .
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git add .\")" = "Y" ]; then
+    git add .
+fi
 
 # Commit changes
-if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
-    COMMIT_MSG[$((LOOP_INDEX++))]="-m"
-    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-        while true; do
-            read -p "请输入提交信息(或者输入d使用默认提交信息): " msg
-            if [ "d" = "${msg}" ]; then
-                COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
-                break
-            elif [ ! "X${msg}" = "X" ]; then
-                COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
-                break
-            fi
-        done
-    else
-        COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git commit\")" = "Y" ]; then
+    if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
+        COMMIT_MSG[$((LOOP_INDEX++))]="-m"
+        if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+            while true; do
+                read -p "请输入提交信息(或者输入d使用默认提交信息): " msg
+                if [ "d" = "${msg}" ]; then
+                    COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+                    break
+                elif [ ! "X${msg}" = "X" ]; then
+                    COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
+                    break
+                fi
+            done
+        else
+            COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+        fi
     fi
+
+    git commit "${COMMIT_MSG[@]}"
 fi
 
-notice_msg "[3]Commit ..."
-git commit "${COMMIT_MSG[@]}"
-
-notice_msg "[4]Pull ..."
-git pull --rebase
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git pull --rebase\")" = "Y" ]; then
+    git pull --rebase
+fi
 
 # Push changes to remote
-if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-    confirm_go_on "是否推送到远程"
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git push\")" = "Y" ]; then
+    git push
 fi
-
-notice_msg "[5]Push ..."
-git push
 
 notice_msg "Completed!"
