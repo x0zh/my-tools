@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.4.0
+# version: v1.4.1
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -49,7 +49,7 @@ error_msg() {
 # 询问是否继续的函数
 confirm_go_on() {
     while true; do
-        read -p "$(echo -e "${ORANGE}${*-"是否继续"}?(y/n)${NOCOLOR}")" yn
+        read -r -p "$(echo -e "${ORANGE}${*-"是否继续"}?(y/n)${NOCOLOR}")" yn
         case ${yn} in
         # 默认什么都不输入是Y
         [Yy]* | "") ;;
