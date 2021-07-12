@@ -49,7 +49,7 @@ error_msg() {
 # 询问是否继续的函数
 confirm_go_on() {
     while true; do
-        read -p "${1-"是否继续"}?(y/n)" yn
+        read -p "$(echo -e "${ORANGE}${*-"是否继续"}?(y/n)${NOCOLOR}")" yn
         case ${yn} in
         # 默认什么都不输入是Y
         [Yy]* | "") ;;
@@ -63,7 +63,7 @@ confirm_go_on() {
 confirm_go_on_v2() {
     local flag
     while true; do
-        read -p "${*-"是否继续"}?(y/n)" yn
+        read -r -p "$(echo -e "${ORANGE}${*-"是否继续"}?(y/n)${NOCOLOR}")" yn
         case ${yn} in
         # 默认什么都不输入是Y
         [Yy]* | "")
@@ -74,7 +74,6 @@ confirm_go_on_v2() {
             flag="N"
             break
         ;;
-        *) echo "请输入y/n" ;;
         esac
     done
     echo "${flag}"

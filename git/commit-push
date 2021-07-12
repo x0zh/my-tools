@@ -72,17 +72,17 @@ done
 
 notice_msg "Current branch: ${CURRENT_BRANCH}"
 
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git status\")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git status")" = "Y" ]; then
     git status
 fi
 
 # Add changes to git
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git add .\")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git add .")" = "Y" ]; then
     git add .
 fi
 
 # Commit changes
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git commit\")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git commit")" = "Y" ]; then
     if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
         COMMIT_MSG[$((LOOP_INDEX++))]="-m"
         if [ "${INTERACTIVE_FLAG}" = "true" ]; then
@@ -104,12 +104,12 @@ if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git commit\")" 
     git commit "${COMMIT_MSG[@]}"
 fi
 
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git pull --rebase\")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git pull --rebase")" = "Y" ]; then
     git pull --rebase
 fi
 
 # Push changes to remote
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git push\")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git push")" = "Y" ]; then
     git push
 fi
 
