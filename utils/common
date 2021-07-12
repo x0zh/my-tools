@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.3.3
+# version: v1.4.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -51,7 +51,8 @@ confirm_go_on() {
     while true; do
         read -p "${1-"是否继续"}?(y/n)" yn
         case ${yn} in
-        [Yy]*) break ;;
+        # 默认什么都不输入是Y
+        [Yy]* | "") ;;
         [Nn]*) exit ;;
         *) echo "请输入y/n" ;;
         esac
@@ -64,7 +65,8 @@ confirm_go_on_v2() {
     while true; do
         read -p "${*-"是否继续"}?(y/n)" yn
         case ${yn} in
-        [Yy]*)
+        # 默认什么都不输入是Y
+        [Yy]* | "")
             flag="Y"
             break
         ;;

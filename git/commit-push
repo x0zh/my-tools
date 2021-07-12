@@ -87,11 +87,11 @@ if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 \"git commit\")" 
         COMMIT_MSG[$((LOOP_INDEX++))]="-m"
         if [ "${INTERACTIVE_FLAG}" = "true" ]; then
             while true; do
-                read -p "请输入提交信息(或者输入d使用默认提交信息): " msg
-                if [ "d" = "${msg}" ]; then
+                read -p "请输入提交信息(不输入将使用默认提交信息): " msg
+                if [ "X${msg}" = "X" ]; then
                     COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
                     break
-                elif [ ! "X${msg}" = "X" ]; then
+                else
                     COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
                     break
                 fi
