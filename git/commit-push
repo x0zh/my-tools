@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v2.0.1
+# version: v3.0.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -26,6 +26,7 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 # 定义变量
 # 当前分支
 CURRENT_BRANCH=$(git_current_branch)
+REMOTE_BRANCH=$(git_remote_branch)
 # commit信息
 COMMIT_MSG=()
 # 默认的commit信息
@@ -70,47 +71,84 @@ done
 
 # 执行逻辑
 
-notice_msg "Current branch: ${CURRENT_BRANCH}"
+notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH}"
 
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git status")" = "Y" ]; then
+if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+    if [ "$(confirm_go_on_v2 "git status")" = "Y" ]; then
+        git status
+    fi
+else
     git status
 fi
 
-# Add changes to git
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git add .")" = "Y" ]; then
-    git add .
-fi
+change_count=$(git status --porcelain | wc -l)
 
-# Commit changes
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git commit")" = "Y" ]; then
-    if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
-        COMMIT_MSG[$((LOOP_INDEX++))]="-m"
-        if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-            while true; do
-                read -p "请输入提交信息(不输入将使用默认提交信息): " msg
-                if [ "X${msg}" = "X" ]; then
-                    COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
-                    break
-                else
-                    COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
-                    break
-                fi
-            done
-        else
-            COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+if [ "${change_count}" != "0" ]; then
+    # Add changes to git
+    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+        if [ "$(confirm_go_on_v2 "git add .")" = "Y" ]; then
+            git add .
         fi
+    else
+        git add .
     fi
 
-    git commit "${COMMIT_MSG[@]}"
+    # Commit changes
+    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+        if [ "$(confirm_go_on_v2 "git commit")" = "Y" ]; then
+            if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
+                COMMIT_MSG[$((LOOP_INDEX++))]="-m"
+                while true; do
+                    read -p "请输入提交信息(不输入将使用默认提交信息): " msg
+                    if [ "X${msg}" = "X" ]; then
+                        COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+                        break
+                    else
+                        COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
+                        break
+                    fi
+                done
+            fi
+            git commit "${COMMIT_MSG[@]}"
+        fi
+    else
+        if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
+            COMMIT_MSG[$((LOOP_INDEX++))]="-m"
+            COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+        fi
+        git commit "${COMMIT_MSG[@]}"
+    fi
 fi
 
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git pull --rebase")" = "Y" ]; then
-    git pull --rebase
+# 没有对应的远程分支
+if [ "X${REMOTE_BRANCH}" = "X" ]; then
+    notice_msg "Completed!"
+    exit 0;
 fi
 
-# Push changes to remote
-if [ "${INTERACTIVE_FLAG}" = "true" ] && [ "$(confirm_go_on_v2 "git push")" = "Y" ]; then
-    git push
+# 落后远程分支的提交数
+behind_count=$(git rev-list --count HEAD..@{u})
+if [ "${behind_count}" != "0" ]; then
+    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+        if [ "$(confirm_go_on_v2 "git pull --rebase")" = "Y" ]; then
+            git pull --rebase
+        fi
+    else
+        git pull --rebase
+    fi
+fi
+
+# 领先远程分支的提交数
+ahead_count=$(git rev-list --count @{u}..HEAD)
+if [ "${ahead_count}" != "0" ]; then
+    # Push changes to remote
+    if [ "${INTERACTIVE_FLAG}" = "true" ]; then
+        if [ "$(confirm_go_on_v2 "git push")" = "Y" ]; then
+            git push
+        fi
+    else
+        git push
+    fi
 fi
 
 notice_msg "Completed!"
