@@ -35,12 +35,12 @@ chmod a+x my-tools
 
 ### Git
 
-| 命令名称              | 描述                                     |
-| :------------------- | :--------------------------------------- |
-| git-new-branch       | 基于当前分支创建新分支，并与对应的远程分支绑定   |
-| git-commit-push      | 提交当前分支的变更，并推送到远程               |
+| 命令名称              | 描述                                          |
+| :------------------- | :--------------------------------------------- |
+| git-new-branch       | 基于当前分支创建新分支，并与对应的远程分支绑定 |
+| git-auto             | 提交当前分支的变更，并推送到远程               |
 | git-delete-branch    | 删除指定的本地分支和对应的远程分支             |
-| gitlab-merge-request | 提交Gitlab合并请求                         |
+| gitlab-merge-request | 提交Gitlab合并请求                             |
 
 ### File
 
@@ -66,11 +66,11 @@ My-Tools不仅使用起来很方便，同时也可以很方便地修改或者增
 
 ### 修改工具
 
-如果现有的工具不能满足你的使用场景，可以对其进行修改，然后执行 `./my-tools -r` 重新安装即可。
+如果现有的工具不能满足你的使用场景，可以对其进行修改，然后执行 `./my-tools -i` 重新安装即可。
 
 ### 增加工具
 
-在根目录或者子目录下创建shell脚本文件，编写完脚本后执行 `./my-tools -r` 重新安装即可。
+在根目录或者子目录下创建shell脚本文件，编写完脚本后执行 `./my-tools -i` 重新安装即可。
 
 > TIP: shell脚本文件中需要在注释中指定命令的别名才能正常安装，格式如下
 
@@ -80,6 +80,4 @@ My-Tools不仅使用起来很方便，同时也可以很方便地修改或者增
 
 ## License
 
-MIT
-
-[![License: MIT](https://imgields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[MIT License](https://opensource.org/licenses/MIT)

@@ -1,11 +1,11 @@
 #!/bin/bash
-# version: v3.0.0
+# version: v4.0.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
 # site: https://zxbetter.github.io
 # time: 2020-08-21 16:00:00
-# alias: git-commit-push
+# alias: git-auto
 # ----------------------------------------------------------------------------------------------------------------------
 # git status ==> git add . ==> git commit ==> git pull --rebase ==> git push
 # ----------------------------------------------------------------------------------------------------------------------
@@ -76,14 +76,8 @@ notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH}"
 echo_orange "git fetch"
 git fetch
 
-if [ "${INTERACTIVE_FLAG}" = "true" ]; then
-    if [ "$(confirm_go_on_v2 "git status")" = "Y" ]; then
-        git status
-    fi
-else
-    echo_orange "git status"
-    git status
-fi
+echo_orange "git status"
+git status
 
 change_count=$(git status --porcelain | wc -l)
 
