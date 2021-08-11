@@ -46,6 +46,10 @@ error_msg() {
     exit
 }
 
+echo_orange() {
+    echo -e "${ORANGE}${*}${NOCOLOR}"
+}
+
 # 询问是否继续的函数
 confirm_go_on() {
     while true; do

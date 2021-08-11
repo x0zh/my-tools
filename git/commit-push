@@ -73,11 +73,15 @@ done
 
 notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH}"
 
+echo_orange "git fetch"
+git fetch
+
 if [ "${INTERACTIVE_FLAG}" = "true" ]; then
     if [ "$(confirm_go_on_v2 "git status")" = "Y" ]; then
         git status
     fi
 else
+    echo_orange "git status"
     git status
 fi
 
@@ -90,6 +94,7 @@ if [ "${change_count}" != "0" ]; then
             git add .
         fi
     else
+        echo_orange "git add ."
         git add .
     fi
 
@@ -116,6 +121,7 @@ if [ "${change_count}" != "0" ]; then
             COMMIT_MSG[$((LOOP_INDEX++))]="-m"
             COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
         fi
+        echo_orange "git commit ${COMMIT_MSG[@]}"
         git commit "${COMMIT_MSG[@]}"
     fi
 fi
@@ -134,6 +140,7 @@ if [ "${behind_count}" != "0" ]; then
             git pull --rebase
         fi
     else
+        echo_orange "git pull --rebase"
         git pull --rebase
     fi
 fi
@@ -147,6 +154,7 @@ if [ "${ahead_count}" != "0" ]; then
             git push
         fi
     else
+        echo_orange "git push"
         git push
     fi
 fi
