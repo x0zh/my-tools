@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v4.1.0
+# version: v4.2.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -80,6 +80,9 @@ if [ "${change_count}" != "0" ]; then
     # Add changes to git
     if [ "$(confirm_go_on_v2 "git add .")" = "Y" ]; then
         git add .
+    else
+        notice_msg "Completed!"
+        exit
     fi
 
     # Commit changes
@@ -98,13 +101,16 @@ if [ "${change_count}" != "0" ]; then
             done
         fi
         git commit "${COMMIT_MSG[@]}"
+    else
+        notice_msg "Completed!"
+        exit
     fi
 fi
 
 # 没有对应的远程分支
 if [ "X${REMOTE_BRANCH}" = "X" ]; then
     notice_msg "Completed!"
-    exit;
+    exit
 fi
 
 # 落后远程分支的提交数
