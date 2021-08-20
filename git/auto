@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v4.3.0
+# version: v4.3.1
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -61,6 +61,11 @@ while true; do
 done
 
 # 执行逻辑
+
+echo ""
+notice_msg "User: $(git config user.name)"
+notice_msg "Email: $(git config user.email)"
+echo ""
 
 echo_orange "git fetch"
 git fetch
