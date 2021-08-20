@@ -167,5 +167,7 @@ git_remote_url() {
 
 # 当前Git分支对应的远程分支
 git_remote_branch() {
-    git rev-parse --abbrev-ref --symbolic-full-name @{u}
+    # 没有对应的远程分支时，会输出错误提示，这里把错误提示隐藏
+    # echo $(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+    git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)"
 }

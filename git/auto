@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v4.2.0
+# version: v4.3.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -10,7 +10,7 @@
 # git status ==> git add . ==> git commit ==> git pull --rebase ==> git push
 # ----------------------------------------------------------------------------------------------------------------------
 
-set -eo pipefail
+set -e
 
 SCRIPTPATH=$(
     cd "$(dirname "$0")"
@@ -24,10 +24,6 @@ export APP_HOME="${SCRIPTPATH%/my-tools/*}/my-tools"
 . "${APP_HOME}/utils/common"
 
 # 定义变量
-# 当前分支
-CURRENT_BRANCH=$(git_current_branch)
-# 远程分支
-REMOTE_BRANCH=$(git_remote_branch)
 # commit信息
 COMMIT_MSG=()
 # 默认的commit信息
@@ -66,10 +62,15 @@ done
 
 # 执行逻辑
 
-notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH}"
-
 echo_orange "git fetch"
 git fetch
+
+# 当前分支
+CURRENT_BRANCH=$(git_current_branch)
+# 远程分支
+REMOTE_BRANCH=$(git_remote_branch)
+
+notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH:-[no remote branch]}"
 
 echo_orange "git status"
 git status
