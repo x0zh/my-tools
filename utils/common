@@ -165,9 +165,14 @@ git_remote_url() {
     git config -l | awk -F 'remote.origin.url=' '/remote\.origin\.url=/ {print $2}'
 }
 
-# 当前Git分支对应的远程分支
+# 指定Git分支对应的远程分支
 git_remote_branch() {
-    # 没有对应的远程分支时，会输出错误提示，这里把错误提示隐藏
-    # echo $(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
-    git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)"
+    if [ "X${*}" = "X" ]; then
+        # 适用于当前分支
+        git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)"
+    else
+        # 没有对应的远程分支时，会输出错误提示，这里把错误提示隐藏
+        # 使用于任何分支
+        echo $(git rev-parse --abbrev-ref --symbolic-full-name ${*}@{u} 2>/dev/null)
+    fi
 }
