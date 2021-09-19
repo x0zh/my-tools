@@ -80,7 +80,7 @@ notice_msg "Current branch: ${CURRENT_BRANCH} ==> ${REMOTE_BRANCH:-[no remote br
 echo_orange "git status"
 git status
 
-change_count=$(git status --porcelain | wc -l)
+change_count=$(git status --porcelain | awk 'END{print NR}')
 
 if [ "${change_count}" != "0" ]; then
     # Add changes to git
