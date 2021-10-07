@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.1.3
+# version: v1.1.4
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -49,24 +49,6 @@ EOF
     exit
 }
 
-# 询问是否删除文件的函数
-confirm_delete_file() {
-    if [ -f "$1" ]; then
-        if [ "$2" = "true" ]; then
-            rm -f "$1"
-        else
-            while true; do
-                read -p "是否要删除${1}?(y/n)" yn
-                case ${yn} in
-                [Yy]*) rm -f "$1" ;;
-                [Nn]*) exit ;;
-                *) echo "请输入y/n" ;;
-                esac
-            done
-        fi
-    fi
-}
-
 # 解析参数
 while true; do
     if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
@@ -98,7 +80,7 @@ fi
 notice_msg "2)生成文件:"
 
 for file_path in ${TARGET_FILE_PATH[*]}; do
-    confirm_delete_file "${file_path}" "${FORCE_FLAG}"
+    delete_file "${file_path}" "${FORCE_FLAG}" "true"
 
     sed -e "s {{NOW_TIME}} $(date '+%Y-%m-%d\ %H:%M:%S') g" \
         "${TEMPLATE_FILE_PATH}" >"${file_path}"

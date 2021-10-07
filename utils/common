@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.6.0
+# version: v1.7.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -176,4 +176,40 @@ git_remote_branch() {
             git rev-parse --abbrev-ref --symbolic-full-name "${*}"@{u}
         fi
     fi
+}
+
+# 文件相关函数
+# ----------------------------------------------------------------------------------------------------------------------
+
+# 询问是否删除文件的函数
+delete_file() {
+    local flag="Y"
+    if [ -f "$1" ]; then
+        if [ "$2" = "true" ]; then
+            rm -f "$1"
+            flag="Y"
+        else
+            while true; do
+                read -p "${4-是否要删除}${1}?(y/n)" yn
+                case ${yn} in
+                [Yy]*) 
+                    rm -f "$1"
+                    flag="Y"
+                    break
+                ;;
+                [Nn]*)
+                    if [ "$3" = "true" ]; then
+                        exit
+                    else
+                        flag="N"
+                        break
+                    fi
+                ;;
+                esac
+            done
+        fi
+    else
+        flag="N"
+    fi
+    echo "${flag}"
 }

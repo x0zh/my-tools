@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v1.1.3
+# version: v1.1.4
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -72,7 +72,8 @@ done
 
 if [ "X${REMOTE_URL}" = "X" ] || [ "X${SOURCE_BRANCH}" = "X" ] || [ "X${TARGET_BRANCH}" = "X" ]; then
     HOME_URL="$(git_remote_url)"
-    open_url "${HOME_URL%.git*}/-/merge_requests"
+    # open_url "${HOME_URL%.git*}/-/merge_requests"
+    open_url "${HOME_URL%.git*}/merge_requests"
     helpu
 fi
 
@@ -85,7 +86,9 @@ echo "    源分支      : ${SOURCE_BRANCH}"
 echo "    目标分支    : ${TARGET_BRANCH}"
 
 echo " "
-MERGE_URL="${REMOTE_URL%.git*}/-/merge_requests/new?merge_request%5Bsource_branch%5D=${SOURCE_BRANCH}&merge_request%5Btarget_branch%5D=${TARGET_BRANCH}"
+# 根据仓库修改
+# MERGE_URL="${REMOTE_URL%.git*}/-/merge_requests/new?merge_request%5Bsource_branch%5D=${SOURCE_BRANCH}&merge_request%5Btarget_branch%5D=${TARGET_BRANCH}"
+MERGE_URL="${REMOTE_URL%.git*}/merge_requests/new?merge_request%5Bsource_branch%5D=${SOURCE_BRANCH}&merge_request%5Btarget_branch%5D=${TARGET_BRANCH}"
 echo "创建合并请求：${MERGE_URL}"
 open_url "${MERGE_URL}"
 
