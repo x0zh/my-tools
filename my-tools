@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v4.9.0
+# version: v5.0.0
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -187,7 +187,7 @@ list_all_tools() {
 
 # 版本号函数
 my_tools_version() {
-    echo && echo "v4.9.0"
+    echo && echo "v5.0.0"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then

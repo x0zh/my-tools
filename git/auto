@@ -65,10 +65,12 @@ done
 echo ""
 notice_msg "User: $(git config user.name)"
 notice_msg "Email: $(git config user.email)"
+notice_msg "Remote: $(git remote get-url origin)"
 echo ""
 
 echo_orange "git fetch"
-git fetch
+git fetch origin --prune
+echo ""
 
 # 当前分支
 CURRENT_BRANCH=$(git_current_branch)
@@ -81,35 +83,34 @@ echo_orange "git status"
 git status
 
 change_count=$(git status --porcelain | awk 'END{print NR}')
+change_stash=""
 
 if [ "${change_count}" != "0" ]; then
     # Add changes to git
     if [ "$(confirm_go_on_v2 "git add .")" = "Y" ]; then
         git add .
-    else
-        notice_msg "Completed!"
-        exit
-    fi
-
-    # Commit changes
-    if [ "$(confirm_go_on_v2 "git commit")" = "Y" ]; then
-        if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
-            COMMIT_MSG[$((LOOP_INDEX++))]="-m"
-            while true; do
-                read -p "请输入提交信息(不输入将使用默认提交信息): " msg
-                if [ "X${msg}" = "X" ]; then
-                    COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
-                    break
-                else
-                    COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
-                    break
-                fi
-            done
+        # Commit changes
+        if [ "$(confirm_go_on_v2 "git commit")" = "Y" ]; then
+            if [ ${#COMMIT_MSG[@]} -eq 0 ]; then
+                COMMIT_MSG[$((LOOP_INDEX++))]="-m"
+                while true; do
+                    read -p "请输入提交信息(不输入将使用默认提交信息): " msg
+                    if [ "X${msg}" = "X" ]; then
+                        COMMIT_MSG[$((LOOP_INDEX++))]="${DEFAULT_COMMIT_MSG}"
+                        break
+                    else
+                        COMMIT_MSG[$((LOOP_INDEX++))]="${msg}"
+                        break
+                    fi
+                done
+            fi
+            git commit "${COMMIT_MSG[@]}"
+        else
+            notice_msg "Completed!"
+            exit
         fi
-        git commit "${COMMIT_MSG[@]}"
     else
-        notice_msg "Completed!"
-        exit
+        change_stash="stash"
     fi
 fi
 
@@ -117,6 +118,11 @@ fi
 if [ "X${REMOTE_BRANCH}" = "X" ]; then
     notice_msg "Completed!"
     exit
+fi
+
+# git stash
+if [ "X${change_stash}" = "Xstash" ]; then
+    git stash
 fi
 
 # 落后远程分支的提交数
@@ -131,6 +137,11 @@ ahead_count=$(git rev-list --count @{u}..HEAD)
 if [ "${ahead_count}" != "0" ]; then
     echo_orange "git push"
     git push
+fi
+
+# git unstash
+if [ "X${change_stash}" = "Xstash" ]; then
+    git stash pop
 fi
 
 notice_msg "Completed!"

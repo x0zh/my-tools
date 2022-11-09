@@ -2,3 +2,6 @@ tmp/
 dist/
 user-data/
 .DS_store
+.run/
+.idea/
+.fleet/

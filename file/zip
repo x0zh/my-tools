@@ -1,13 +1,13 @@
 #!/bin/bash
-# version: v1.0.0
+# version: v1.0.1
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
 # site: https://zxbetter.github.io
 # time: 2020-09-30 17:25:05
-# alias: zip
+# alias: zzip
 # ----------------------------------------------------------------------------------------------------------------------
-# 压缩文件
+# 压缩文件，解决Mac中的zip压缩包在其他系统中解压，或多出__MACOSX文件夹和.DS_Store文件的问题。
 # ----------------------------------------------------------------------------------------------------------------------
 
 set -e
@@ -32,7 +32,7 @@ SOURCE_DIRS=""
 helpu() {
     cat <<EOF
 
-usage: $0 [option] <dir ...>
+usage: $0 <dir ...>
 
 压缩文件夹，多个用空格隔开。
 

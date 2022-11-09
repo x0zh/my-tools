@@ -1,13 +1,13 @@
 #!/bin/bash
-# version: v1.1.3
+# version: v1.1.4
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
 # site: https://zxbetter.github.io
 # time: 2020-08-22 16:51:12
-# alias: mvn-skip-test-doc
+# alias: mvn-simple
 # ----------------------------------------------------------------------------------------------------------------------
-# 执行maven命令时，跳过单元测试，跳过生成JavaDoc文档。
+# 执行maven命令时，跳过单元测试，跳过生成JavaDoc文档，跳过SpringBoot等。
 # ----------------------------------------------------------------------------------------------------------------------
 
 set -eo pipefail
@@ -47,8 +47,8 @@ fi
 
 # 执行逻辑
 
-notice_msg "开始执行Maven命令: mvn ${*} -DskipTests=true -Dmaven.javadoc.skip=true"
+notice_msg "开始执行Maven命令: mvn ${*} -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.springboot.skip=true"
 
-mvn "${@}" -DskipTests=true -Dmaven.javadoc.skip=true
+mvn "${@}" -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.springboot.skip=true
 
 notice_msg "完成!"
