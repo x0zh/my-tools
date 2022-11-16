@@ -1,5 +1,5 @@
 #!/bin/bash
-# version: v5.0.0
+# version: v5.0.1
 # author: zxbetter
 # license: MIT
 # contact: zhangxinbetter@gmail.com
@@ -14,8 +14,8 @@ set -e
 
 # 应用的目录
 APP_HOME=$(
-    cd "$(dirname "$0")"
-    pwd
+  cd "$(dirname "$0")"
+  pwd
 )
 export APP_HOME=${APP_HOME}
 
@@ -39,7 +39,7 @@ SHELL_RC_FILE=("${HOME}/.zshrc" "${HOME}/.bashrc")
 # 定义函数
 # 帮助函数
 helpu() {
-    cat <<EOF
+  cat <<EOF
 
 usage: $0 <option>
 
@@ -56,153 +56,153 @@ EOF
 
 # 提示函数
 after_complete() {
-    echo " "
-    echo "为了正常使用，请重启shell或者执行如下命令(取决于当前使用的shell环境): "
-    echo " "
-    for rc_file in ${SHELL_RC_FILE[*]}; do
-        if [ -f "${rc_file}" ]; then
-            echo "    source ${rc_file}"
-        fi
-    done
-    echo " "
+  echo " "
+  echo "为了正常使用，请重启shell或者执行如下命令(取决于当前使用的shell环境): "
+  echo " "
+  for rc_file in ${SHELL_RC_FILE[*]}; do
+    if [ -f "${rc_file}" ]; then
+      echo "    source ${rc_file}"
+    fi
+  done
+  echo " "
 }
 
 add_x() {
-    if [ -f "${1}" ]; then
-        if [ ! -x "${1}" ]; then
-            chmod a+x "${1}"
-        fi
+  if [ -f "${1}" ]; then
+    if [ ! -x "${1}" ]; then
+      chmod a+x "${1}"
     fi
+  fi
 }
 
 # 安装函数
 install_my_tools() {
-    local idx=${#IGNORE_LIST[@]}
+  local idx=${#IGNORE_LIST[@]}
 
-    notice_msg "准备安装 ${APP_HOME}"
+  notice_msg "准备安装 ${APP_HOME}"
 
-    if [ ! -d "${APP_DIST}" ]; then
-        mkdir "${APP_DIST}"
-        echo "[创建] ${APP_DIST}"
+  if [ ! -d "${APP_DIST}" ]; then
+    mkdir "${APP_DIST}"
+    echo "[创建] ${APP_DIST}"
+  fi
+
+  if [ -f "${INSTALL_FILE}" ]; then
+    rm -f "${INSTALL_FILE}"
+  fi
+
+  touch "${INSTALL_FILE}"
+  echo "[创建] ${INSTALL_FILE}"
+
+  # 读取要忽略的文件
+  if [ -f "${IGNORE_FILE}" ]; then
+    # || [ -n "$line" ] 防止文件最后一行不是空行时，不能被读到的问题
+    while IFS= read -r line || [ -n "$line" ]; do
+      # 去掉#开头的注释
+      if [ "${line%${line#?}}"x != '#x' ]; then
+        IGNORE_LIST[${idx}]="${line}"
+        idx=$((idx + 1))
+      fi
+    done <"${IGNORE_FILE}"
+  fi
+  echo "[忽略] ${IGNORE_LIST[*]}"
+
+  install_one_tool "${APP_HOME}"
+
+  for rc_file in ${SHELL_RC_FILE[*]}; do
+    if [ -f "${rc_file}" ]; then
+      echo "[创建链接] ${rc_file}"
+      echo ". ${INSTALL_FILE} #MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT" >>${rc_file}
     fi
+  done
 
-    if [ -f "${INSTALL_FILE}" ]; then
-        rm -f "${INSTALL_FILE}"
-    fi
-
-    touch "${INSTALL_FILE}"
-    echo "[创建] ${INSTALL_FILE}"
-
-    # 读取要忽略的文件
-    if [ -f "${IGNORE_FILE}" ]; then
-        # || [ -n "$line" ] 防止文件最后一行不是空行时，不能被读到的问题
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 去掉#开头的注释
-            if [ "${line%${line#?}}"x != '#x' ]; then
-                IGNORE_LIST[${idx}]="${line}"
-                idx=$((idx+1))
-            fi
-        done < "${IGNORE_FILE}"
-    fi
-    echo "[忽略] ${IGNORE_LIST[*]}"
-    
-    install_one_tool "${APP_HOME}"
-
-    for rc_file in ${SHELL_RC_FILE[*]}; do
-        if [ -f "${rc_file}" ]; then
-            echo "[创建链接] ${rc_file}"
-            echo ". ${INSTALL_FILE} #MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT" >>${rc_file}
-        fi
-    done
-
-    notice_msg "安装完成!"
+  notice_msg "安装完成!"
 }
 
 install_one_tool() {
-    local ignore_flag="0"
-    local idx_file
-    local command_alias
+  local ignore_flag="0"
+  local idx_file
+  local command_alias
 
-    # 2. 安装
-    for item in "${1}"/*; do
-        idx_file="${item#*${APP_HOME}/}"
-        ignore_flag="0"
+  # 2. 安装
+  for item in "${1}"/*; do
+    idx_file="${item#*${APP_HOME}/}"
+    ignore_flag="0"
 
-        # 2.1 判断是否被忽略
-        for ignore_item in "${IGNORE_LIST[@]}"; do
-            if [ "${ignore_item}" == "${idx_file}" ]; then
-                ignore_flag="1"
-                break
-            fi
-        done
-
-        # 2.2 安装
-        if [ ${ignore_flag} == "0" ]; then
-            if [ -d "${item}" ]; then
-                # 递归安装
-                install_one_tool "${item}"
-            elif [ -f "${item}" ]; then
-                # 获取命令别名
-                command_alias=$(grep -E '^#\s*alias\s*:\s*\S+' "${item}" | awk -F ': ?' '{print $2}' | head -n 1)
-
-                if [ "${command_alias}x" != "x" ]; then
-                    add_x "${item}"
-                    printf "alias %s=%s\n" "${command_alias}" "${item}" >> "${INSTALL_FILE}"
-                    echo "[安装] ${item}"
-                fi
-            fi
-        fi
+    # 2.1 判断是否被忽略
+    for ignore_item in "${IGNORE_LIST[@]}"; do
+      if [ "${ignore_item}" == "${idx_file}" ]; then
+        ignore_flag="1"
+        break
+      fi
     done
+
+    # 2.2 安装
+    if [ ${ignore_flag} == "0" ]; then
+      if [ -d "${item}" ]; then
+        # 递归安装
+        install_one_tool "${item}"
+      elif [ -f "${item}" ]; then
+        # 获取命令别名
+        command_alias=$(grep -E '^#\s*alias\s*:\s*\S+' "${item}" | awk -F ': ?' '{print $2}' | head -n 1)
+
+        if [ "${command_alias}x" != "x" ]; then
+          add_x "${item}"
+          printf "alias %s=%s\n" "${command_alias}" "${item}" >>"${INSTALL_FILE}"
+          echo "[安装] ${item}"
+        fi
+      fi
+    fi
+  done
 }
 
 # 卸载函数
 uninstall_my_tools() {
 
-    notice_msg "准备卸载 ${APP_HOME}"
+  notice_msg "准备卸载 ${APP_HOME}"
 
-    for rc_file in ${SHELL_RC_FILE[*]}; do
-        if [ -f "${rc_file}" ]; then
-            echo "[解除链接] ${rc_file}"
-            sed -i.bak "/#MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT/d" "${rc_file}"
-        fi
-    done
-
-    if [ -d "${APP_DIST}" ]; then
-        echo "[删除] ${APP_DIST}"
-        rm -rf "${APP_DIST}"
+  for rc_file in ${SHELL_RC_FILE[*]}; do
+    if [ -f "${rc_file}" ]; then
+      echo "[解除链接] ${rc_file}"
+      sed -i.bak "/#MY-TOOLS-PATH DO NOT REMOVE THIS COMMENT/d" "${rc_file}"
     fi
+  done
 
-    notice_msg "卸载完成!"
+  if [ -d "${APP_DIST}" ]; then
+    echo "[删除] ${APP_DIST}"
+    rm -rf "${APP_DIST}"
+  fi
+
+  notice_msg "卸载完成!"
 }
 
 # 列出所有命令
 list_all_tools() {
-    if [ -f "${INSTALL_FILE}" ]; then
-        sed -e "/^#/d" -e "/^$/d" "${INSTALL_FILE}"
-    else
-        echo "尚未安装任何命令"
-        helpu
-    fi
+  if [ -f "${INSTALL_FILE}" ]; then
+    sed -e "/^#/d" -e "/^$/d" "${INSTALL_FILE}"
+  else
+    echo "尚未安装任何命令"
+    helpu
+  fi
 }
 
 # 版本号函数
 my_tools_version() {
-    echo && echo "v5.0.0"
+  echo && echo "v5.0.1"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-    helpu
+  helpu
 elif [ "$1" = "--install" ] || [ "$1" = "-i" ]; then
-    uninstall_my_tools
-    install_my_tools
-    after_complete
+  uninstall_my_tools
+  install_my_tools
+  after_complete
 elif [ "$1" = "--uninstall" ] || [ "$1" = "-u" ]; then
-    uninstall_my_tools
-    after_complete
+  uninstall_my_tools
+  after_complete
 elif [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
-    list_all_tools
+  list_all_tools
 elif [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
-    my_tools_version
+  my_tools_version
 else
-    helpu
+  helpu
 fi
